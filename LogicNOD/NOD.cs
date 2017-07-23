@@ -9,49 +9,39 @@ namespace LogicNOD
 		/// <returns>The NOD.</returns>
 		/// <param name="a">The alpha component.</param>
 		/// <param name="b">The blue component.</param>
-		public static long Euclid(long a, long b)
-		{
-			Check(a, b);
-			return EuclidLogic(a, b);
-		}
-		public static long Euclid(long a, long b, long c)
-		{
-			Check(a, b, c);
-			return EuclidLogic(EuclidLogic(a, b), c);
-		}
-		public static long Euclid(params long[] numbers)
-		{
-			Check(numbers);
-			for (int i = 0; i < numbers.Length - 1; i++)
-			{
-				numbers[i + 1] = EuclidLogic(numbers[i], numbers[i + 1]);
-			}
-			return numbers[numbers.Length - 1];
-		}
+		public static long Euclid(long a, long b) => HelperWith2Parameters(a, b, EuclidLogic);
+		public static long Euclid(long a, long b, long c) => HelperWith3Parameters(a, b, c, EuclidLogic);
+		public static long Euclid(params long[] numbers) => HelperWithParams(numbers, EuclidLogic);
 		/// <summary>
 		/// Stein algorithm to find NOD.
 		/// </summary>
 		/// <returns>The NOD.</returns>
 		/// <param name="a">The alpha component.</param>
 		/// <param name="b">The blue component.</param>
-		public static long Stein(long a, long b)
+		public static long Stein(long a, long b) => HelperWith2Parameters(a, b, SteinLogic);
+		public static long Stein(long a, long b, long c) => HelperWith3Parameters(a, b, c, SteinLogic);
+		public static long Stein(params long[] numbers) => HelperWithParams(numbers, SteinLogic);
+		/// <summary>
+		/// Help methods.
+		/// </summary>
+		private static long HelperWith2Parameters(long lhs, long rhs, Func<long, long, long> algorithm)
 		{
-			Check(a, b);
-			return SteinLogic(a, b);
+            Check(lhs, rhs);
+			return algorithm(lhs, rhs);
 		}
-		public static long Stein(long a, long b, long c)
+		private static long HelperWith3Parameters(long a, long b, long c, Func<long, long, long> algorithm)
 		{
-			Check(a, b, c);
-			return SteinLogic(SteinLogic(a, b), c);
+            Check(a, b, c);
+			return algorithm(algorithm(a, b), c);
 		}
-		public static long Stein(params long[] numbers)
+		private static long HelperWithParams(long[] numbers, Func<long, long, long> algorithm)
 		{
-			Check(numbers);
-			for (int i = 0; i < numbers.Length - 1; i++)
-			{
-				numbers[i + 1] = SteinLogic(numbers[i], numbers[i + 1]);
-			}
-			return numbers[numbers.Length - 1];
+            Check(numbers);
+            for (int i = 0; i<numbers.Length - 1; i++)
+            {
+				numbers[i + 1] = algorithm(numbers[i], numbers[i + 1]);
+            }
+            return numbers[numbers.Length - 1];
 		}
 		/// <summary>
 		/// Check the specified numbers.
